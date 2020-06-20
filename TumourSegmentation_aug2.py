@@ -16,7 +16,7 @@ from sklearn.model_selection import KFold
 from sklearn.utils.class_weight import compute_class_weight
 
 os.environ["CUDA_DEVICE_ORDER"]="PCI_BUS_ID";
-os.environ["CUDA_VISIBLE_DEVICES"]="0";
+os.environ["CUDA_VISIBLE_DEVICES"]="1";
 
 warnings.simplefilter(action='ignore',  category=FutureWarning)
 
@@ -135,7 +135,7 @@ class unet(object):
         steps_val_not_improved = 0
         for e in range(nEpochs):
             print('\nEpoch {}/{}'.format(e+1, nEpochs))
-            
+
             Xb_train, Yb_train = im_gen_train.next(), gt_gen_train.next()
             Xb_valid, Yb_valid = im_gen_valid.next(), gt_gen_valid.next()
             #for generation in range(4):
@@ -274,98 +274,99 @@ def apply_augmentation(X, Y, N_new_images):
 diceScores = np.zeros((15,5))
 myepochs = 300
 
-for dataCombination in range(0,15):
+for dataCombination in range(11,15):
 
-    if (dataCombination == 0): # BRATS
-        images = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_augmented_skullstrip.txt'
-    elif (dataCombination == 1): # qMRI
-        images = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRI_augmented_skullstrip.txt'
-    elif (dataCombination == 2): # qMRI GD
-        images = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRIGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRIGD_augmented_skullstrip.txt'
-    elif (dataCombination == 3): # BRATS, qMRI
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+    if (dataCombination == 0):
+        images = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_augmented.txt'
+    elif (dataCombination == 1):
+        images = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRI_augmented.txt'
+    elif (dataCombination == 2):
+        images = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRIGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRIGD_augmented.txt'
+    elif (dataCombination == 3):
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_augmented_skullstrip.txt'
-    elif (dataCombination == 4): # BRATS, qMRI GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_augmented.txt'
+    elif (dataCombination == 4):
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRIGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRIGD_augmented_skullstrip.txt'
-    elif (dataCombination == 5): # qMRI, qMRI GD
-        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRIGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRIGD_augmented.txt'
+    elif (dataCombination == 5):
+        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_qMRIGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRI_qMRIGD_augmented_skullstrip.txt'
-    elif (dataCombination == 6): # BRATS, qMRI, qMRI GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images3 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_qMRIGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRI_qMRIGD_augmented.txt'
+    elif (dataCombination == 6): 
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images3 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2,images3),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_augmented.txt'
+
 
     elif (dataCombination == 7): # NON GD
-        images = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_NONGD_augmented_skullstrip.txt'
+        images = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        modelName = 'myWeights_weight60000_depth4_nfilter64_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_NONGD_augmented.txt'
     elif (dataCombination == 8): # BRATS, NON GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_NONGD_augmented.txt'
     elif (dataCombination == 9): # qMRI, NON GD
-        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRI_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRI_NONGD_augmented.txt'
     elif (dataCombination == 10): # qMRI GD, NON GD
-        images1 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRIGD_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRIGD_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRIGD_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRIGD_NONGD_augmented.txt'
     elif (dataCombination == 11): # qMRI, qMRI GD, NON GD
-        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2,images3),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_qMRIGD_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_qMRI_qMRIGD_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_qMRI_qMRIGD_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_qMRI_qMRIGD_NONGD_augmented.txt'
     elif (dataCombination == 12): # BRATS, qMRI, NON GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2,images3),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_NONGD_augmented.txt'
     elif (dataCombination == 13): # BRATS, qMRI GD, NON GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images3 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2,images3),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRIGD_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRIGD_NONGD_augmented_skullstrip.txt'
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRIGD_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRIGD_NONGD_augmented.txt'
     elif (dataCombination == 14): # BRATS, qMRI, qMRI GD, NON GD
-        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images3 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
-        images4 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/Skullstrip/', nr_to_load=nSubjects)
+        images1 = load_T1GDT1T2FLAIRT2(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images2 = load_qMRI(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images3 = load_qMRI_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
+        images4 = load_NON_GD(data_directory='/home/andek67/Data/Gliom/', nr_to_load=nSubjects)
         images = np.concatenate((images1,images2,images3,images4),axis=3)
-        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_NONGD_augmented_skullstrip.h5'
-        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_NONGD_augmented_skullstrip.txt'
-        
+        modelName = 'myWeights_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_NONGD_augmented.h5'
+        filename = 'scores_weight60000_depth4_nfilter64_BRATS_qMRI_qMRIGD_NONGD_augmented.txt'
+    
     kf = KFold(n_splits=5,shuffle=True,random_state=1234)
     fold = 0
     # Loop over cross validation folds
